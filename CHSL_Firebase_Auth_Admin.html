@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fantasy Draft NHL — EHM</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#121d30;--panel2:#17253b;--line:#2c3b54;--text:#edf3fb;--muted:#a8b7cc;--accent:#70b7ff;--green:#43d6a0;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(140deg,#09111e,#101c2e 55%,#0a1220);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:22px clamp(14px,3vw,32px);border-bottom:1px solid var(--line);background:#0a1322eF;position:sticky;top:0;z-index:3}
+h1{margin:0;font-size:clamp(22px,3vw,32px)}header p{margin:5px 0 0;color:var(--muted)}
+main{max-width:1500px;margin:auto;padding:20px;display:grid;grid-template-columns:minmax(270px, .8fr) minmax(340px,1.2fr) minmax(300px,1fr);gap:16px}
+.panel{background:linear-gradient(180deg,var(--panel),#0f1929);border:1px solid var(--line);border-radius:15px;padding:16px;min-width:0}
+h2{font-size:17px;margin:0 0 12px}h3{font-size:14px;margin:16px 0 8px;color:#d7e6f9}
+label{display:block;color:var(--muted);font-size:12px;margin:9px 0 5px}
+input,select,button,textarea{font:inherit;border-radius:9px;border:1px solid var(--line);padding:10px 11px;background:#0b1525;color:var(--text);width:100%;min-width:0}
+button{background:#18365a;border-color:#315780;cursor:pointer;font-weight:650;transition:.15s}
+button:hover{filter:brightness(1.2)}button:disabled{opacity:.4;cursor:not-allowed}
+button.primary{background:#1465a7;border-color:#398cd0}button.good{background:#115c4a;border-color:#20856a}button.danger{background:#54242b;border-color:#88414a}
+.row{display:flex;gap:8px;align-items:end}.row>*{flex:1}.small{font-size:12px;color:var(--muted)}.status{padding:8px 10px;border-radius:8px;background:#0a1524;border:1px solid var(--line);color:var(--muted);margin:10px 0;font-size:12px;overflow-wrap:anywhere}.status.ok{color:var(--green)}.status.bad{color:var(--red)}
+.list{max-height:390px;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.player{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:9px 10px;border-bottom:1px solid #26354a}.player:last-child{border-bottom:0}.player:nth-child(even){background:#ffffff04}.player .name{font-weight:650;overflow-wrap:anywhere}.player .meta{font-size:11px;color:var(--muted)}.player button{width:auto;padding:6px 10px;white-space:nowrap}
+.chip{display:inline-block;border:1px solid #385273;border-radius:99px;padding:3px 8px;font-size:11px;color:#cce5ff}
+.pickrow{display:grid;grid-template-columns:42px 1fr auto;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid #26354a}.picknum{font-weight:800;color:var(--accent)}.pickname{font-weight:650}.pickmeta{font-size:11px;color:var(--muted)}.pickrow:last-child{border-bottom:0}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.kpi{padding:10px;background:var(--panel2);border-radius:10px}.kpi strong{display:block;font-size:21px}.kpi span{font-size:11px;color:var(--muted)}
+details{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}summary{cursor:pointer;color:#c7d8ec;font-weight:650}
+footer{max-width:1500px;margin:0 auto;padding:0 20px 25px;color:var(--muted);font-size:12px}
+#authPanel{max-width:560px;margin:28px auto;padding:20px;background:linear-gradient(180deg,var(--panel),#0f1929);border:1px solid var(--line);border-radius:15px}
+#authPanel h2{margin-bottom:6px}#authPanel .auth-actions{display:flex;gap:8px;margin-top:12px}#authPanel .auth-actions button{flex:1}
+#draftMain,#draftFooter{display:none}
+@media(max-width:1050px){main{grid-template-columns:1fr 1fr}.right{grid-column:1/-1}}
+@media(max-width:650px){main{grid-template-columns:1fr;padding:12px}.right{grid-column:auto}.row{flex-wrap:wrap}header{position:static}.kpis{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header><h1>🏒 Fantasy Draft NHL</h1><p>Repêchage en direct • 30 équipes • joueurs importés depuis EHM</p></header>
+<section id="authPanel">
+  <h2>🔐 Connexion CHSL</h2>
+  <p class="small">Connecte-toi avec ton nom d’utilisateur et ton mot de passe. Aucune adresse courriel n’est affichée dans l’application.</p>
+  <form id="loginForm">
+    <label for="loginUsername">Nom d’utilisateur</label>
+    <input id="loginUsername" autocomplete="username" minlength="3" maxlength="32" required placeholder="ex. admin">
+    <label for="loginPassword">Mot de passe</label>
+    <input id="loginPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Mot de passe">
+    <div class="auth-actions">
+      <button type="submit" id="loginBtn" class="primary">Se connecter</button>
+      <button type="button" id="logoutBtn" class="danger" hidden>Déconnexion</button>
+    </div>
+  </form>
+  <div id="authStatus" class="status">Connexion requise.</div>
+  <p class="small">Les comptes sont créés par l’administrateur dans Firebase. Pour cette première étape, seul le compte administrateur peut ouvrir le panneau de gestion.</p>
+</section>
+<main id="draftMain">
+<section class="panel">
+<h2>1. Salle de draft</h2>
+<label for="room">Code de salle</label>
+<div class="row"><input id="room" value="CHSL-DRAFT" maxlength="32" aria-label="Code de salle"><button id="joinBtn" class="primary">Rejoindre</button></div>
+<div id="connection" class="status">Mode démo local. Configure Firebase pour synchroniser plusieurs participants.</div>
+<label for="teamSelect">Mon équipe / équipe du DG</label><select id="teamSelect"></select>
+<div class="row">
+<div><label for="rounds">Nombre de rondes</label><select id="rounds"><option>1</option><option>2</option><option>3</option><option>5</option><option selected>7</option><option>10</option><option>15</option></select></div>
+<div><label for="orderMode">Ordre des rondes</label><select id="orderMode"><option value="snake" selected>Serpentin</option><option value="same">Même ordre</option></select></div>
+</div>
+<button id="saveSettings" style="margin-top:8px">Enregistrer les paramètres</button>
+<h3>Importer la liste EHM</h3>
+<label for="ehmFile">Fichier players.ehm</label><input id="ehmFile" type="file" accept=".ehm,.txt">
+<div class="small">Les joueurs sont lus depuis le fichier local. Seuls les noms et l'ordre des fiches sont importés; les notes EHM ne sont pas interprétées ici.</div>
+<button id="importBtn" class="good" style="margin-top:9px">Importer les joueurs dans la salle</button>
+<div id="importStatus" class="status">Aucun fichier importé.</div>
+<details><summary>Configuration / aide</summary>
+<p class="small">Sans Firebase, l'application fonctionne en mode démo sur ce navigateur uniquement. Pour le direct à plusieurs, suivez le fichier LISEZ-MOI fourni avec le projet, ajoutez la configuration Firebase dans le code, puis hébergez cette page et intégrez son URL dans Google Sites.</p>
+<button id="exportPlayers">Exporter la liste des joueurs (CSV)</button>
+<button id="resetLocal" class="danger" style="margin-top:7px">Réinitialiser cette salle locale</button>
+</details>
+</section>
+
+<section class="panel">
+<h2>2. Joueurs disponibles</h2>
+<div class="row"><div><label for="search">Rechercher un joueur</label><input id="search" placeholder="Ex. Sidney Crosby"></div><div style="max-width:140px"><label for="poolFilter">Affichage</label><select id="poolFilter"><option value="available">Disponibles</option><option value="all">Tous</option></select></div></div>
+<div class="kpis"><div class="kpi"><strong id="availableCount">0</strong><span>Disponibles</span></div><div class="kpi"><strong id="pickedCount">0</strong><span>Repêchés</span></div><div class="kpi"><strong id="currentPick">1</strong><span>Choix actuel</span></div></div>
+<div id="nextPick" class="status">En attente des joueurs.</div>
+<div id="playersList" class="list"><div class="player"><span class="small">Importe players.ehm pour commencer.</span></div></div>
+</section>
+
+<section class="panel right">
+<h2>3. Tableau du repêchage</h2>
+<div class="row"><button id="undoBtn" class="danger">Annuler le dernier choix</button><button id="exportPicks">Exporter les choix (CSV)</button></div>
+<div id="draftStatus" class="status">Aucun choix effectué.</div>
+<div id="picksList" class="list" style="max-height:600px"><div class="player"><span class="small">Les choix apparaîtront ici en direct.</span></div></div>
+</section>
+</main>
+<footer id="draftFooter">Panneau d’administration CHSL. Les permissions doivent aussi être appliquées dans les règles Firebase Realtime Database.</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, onValue, set, get, runTransaction, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// À REMPLACER par les valeurs de votre projet Firebase. Laissez les valeurs vides pour le mode démo.
+const firebaseConfig = {
+  apiKey: "AIzaSyBrSphFXSApqy0CCI67MsgnYo_W9F4jcws",
+  authDomain: "chsl-2ec2c.firebaseapp.com",
+  databaseURL: "https://chsl-2ec2c-default-rtdb.firebaseio.com",
+  projectId: "chsl-2ec2c",
+  storageBucket: "chsl-2ec2c.firebasestorage.app",
+  messagingSenderId: "722023115695",
+  appId: "1:722023115695:web:e87885740100578f6bdd5a",
+  measurementId: "G-GHP1LBP7JR"
+};
+const firebaseReady = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("REMPLACER") && firebaseConfig.databaseURL && !firebaseConfig.databaseURL.includes("REMPLACER");
+// IMPORTANT : remplacer par l’UID du compte admin créé dans Firebase Authentication.
+// Le même UID doit être inscrit dans les règles Realtime Database.
+    const ADMIN_UID = "w6XavpguH9SPpxb22fmSbbypUYC2";
+
+const defaultTeams = [
+"ANA — Anaheim Ducks","BOS — Boston Bruins","BUF — Buffalo Sabres","CAR — Carolina Hurricanes","CBJ — Columbus Blue Jackets",
+"CGY — Calgary Flames","CHI — Chicago Blackhawks","COL — Colorado Avalanche","DAL — Dallas Stars","DET — Detroit Red Wings",
+"EDM — Edmonton Oilers","FLA — Florida Panthers","LAK — Los Angeles Kings","MIN — Minnesota Wild","MTL — Montreal Canadiens",
+"NJD — New Jersey Devils","NSH — Nashville Predators","NYI — New York Islanders","NYR — New York Rangers","OTT — Ottawa Senators",
+"PHI — Philadelphia Flyers","PIT — Pittsburgh Penguins","SEA — Seattle Kraken","SJS — San Jose Sharks","STL — St. Louis Blues",
+"TBL — Tampa Bay Lightning","TOR — Toronto Maple Leafs","UTA — Utah Mammoth","VAN — Vancouver Canucks","WSH — Washington Capitals"
+];
+let app, auth, db, user = null, isLive = false, isAdmin = false, roomCode = "CHSL-DRAFT", roomRef = null, unsubscribe = null;
+let state = {teams:defaultTeams, players:[], picks:[], rounds:7, orderMode:"snake"};
+const $ = id => document.getElementById(id);
+const escapeHtml = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function localKey(){return "ehmFantasyDraft:"+roomCode}
+function readLocal(){try{return JSON.parse(localStorage.getItem(localKey()))||null}catch{return null}}
+function saveLocal(){localStorage.setItem(localKey(),JSON.stringify(state))}
+function teamIndexForPick(n){
+  const round=Math.floor((n-1)/state.teams.length), slot=(n-1)%state.teams.length;
+  return state.orderMode==="snake" && round%2===1 ? state.teams.length-1-slot : slot;
+}
+function teamForPick(n){return state.teams[teamIndexForPick(n)]||"Équipe inconnue"}
+function nextPickNumber(){return state.picks.length+1}
+function selectedTeam(){return $("teamSelect").value}
+function setStatus(text,kind=""){const e=$("connection");e.textContent=text;e.className="status "+kind}
+async function connectRoom(){
+  if(!user || !isAdmin){setStatus("Connexion administrateur requise pour ouvrir la salle.","bad");return}
+  roomCode=$("room").value.trim().toUpperCase().replace(/[^A-Z0-9-]/g,"").slice(0,32)||"CHSL-DRAFT";
+  $("room").value=roomCode;
+  if(unsubscribe){unsubscribe();unsubscribe=null}
+  if(isLive){
+    roomRef=ref(db,"drafts/"+roomCode);
+    const snap=await get(roomRef);
+    if(!snap.exists()) await set(roomRef,{teams:defaultTeams,players:[],picks:[],rounds:7,orderMode:"snake",createdAt:Date.now()});
+    unsubscribe=onValue(roomRef,s=>{if(s.exists()){state={...state,...s.val()};state.teams=state.teams||defaultTeams;state.players=state.players||[];state.picks=state.picks||[];render()}},err=>setStatus("Erreur de salle : "+err.message,"bad"));
+    setStatus("Connecté en direct à la salle "+roomCode,"ok");
+  }else{
+    const saved=readLocal();state=saved||{teams:defaultTeams,players:[],picks:[],rounds:7,orderMode:"snake"};
+    render();setStatus("Mode démo local : ce navigateur seulement.","");
+  }
+}
+async function persist(patch){
+  if(!isAdmin) throw new Error("Action réservée à l’administrateur.");
+  if(isLive){await update(roomRef,patch)}
+  else {state={...state,...patch};saveLocal();render()}
+}
+function renderTeams(){
+  const previous=$("teamSelect").value;
+  $("teamSelect").innerHTML=state.teams.map((t,i)=>`<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+  if(state.teams.includes(previous)) $("teamSelect").value=previous;
+  $("rounds").value=String(state.rounds||7);$("orderMode").value=state.orderMode||"snake";
+}
+function render(){
+  renderTeams();
+  const picked=new Set(state.picks.map(p=>p.playerId));
+  const q=$("search").value.trim().toLocaleLowerCase("fr");
+  const pool=$("poolFilter").value;
+  const players=state.players.filter(p=>(!q||p.name.toLocaleLowerCase("fr").includes(q))&&(pool==="all"||!picked.has(p.id)));
+  $("availableCount").textContent=state.players.length-picked.size;
+  $("pickedCount").textContent=picked.size;
+  $("currentPick").textContent=nextPickNumber();
+  const total=(Number(state.rounds)||7)*state.teams.length;
+  const next=nextPickNumber();
+  $("nextPick").textContent=next>total?"Repêchage terminé !":`Choix #${next} · ${teamForPick(next)}`;
+  $("playersList").innerHTML=players.slice(0,400).map(p=>{
+    const done=picked.has(p.id);
+    return `<div class="player"><div><div class="name">${escapeHtml(p.name)}</div><div class="meta">Fiche EHM #${p.id+1}${done?" · Déjà repêché":""}</div></div><button class="primary" data-pick="${p.id}" ${done||next>total?"disabled":""}>Repêcher</button></div>`;
+  }).join("")||'<div class="player"><span class="small">Aucun joueur trouvé. Vérifie la recherche ou importe players.ehm.</span></div>';
+  $("draftStatus").textContent=`${picked.size} choix enregistrés sur ${total}. ${isLive?"Synchronisation en direct activée.":"Les choix restent dans ce navigateur."}`;
+  $("picksList").innerHTML=state.picks.slice().reverse().map(p=>`<div class="pickrow"><div class="picknum">#${p.number}</div><div><div class="pickname">${escapeHtml(p.playerName)}</div><div class="pickmeta">${escapeHtml(p.team)} · Ronde ${p.round}</div></div><span class="chip">${escapeHtml(p.team.split(" — ")[0])}</span></div>`).join("")||'<div class="player"><span class="small">Les choix apparaîtront ici.</span></div>';
+}
+async function draftPlayer(id){
+  if(!isAdmin){alert("Le panneau de gestion est réservé à l’administrateur pour le moment.");return}
+  const p=state.players.find(x=>x.id===Number(id));if(!p)return;
+  const num=nextPickNumber(), total=(Number(state.rounds)||7)*state.teams.length;
+  if(num>total){alert("Le repêchage est terminé.");return}
+  if(state.picks.some(x=>x.playerId===p.id)){alert("Ce joueur a déjà été repêché.");return}
+  const pick={number:num,round:Math.floor((num-1)/state.teams.length)+1,team:teamForPick(num),playerId:p.id,playerName:p.name,byTeam:selectedTeam(),createdAt:Date.now()};
+  if(isLive){
+    const picksRef=ref(db,"drafts/"+roomCode+"/picks");
+    const result=await runTransaction(picksRef,current=>{
+      current=current||[];
+      if(current.length!==num-1||current.some(x=>x.playerId===p.id))return;
+      return [...current,pick];
+    });
+    if(!result.committed){alert("Un autre DG vient de choisir. Le tableau a été actualisé; réessaie.");return}
+  }else{
+    state.picks.push(pick);saveLocal();render();
+  }
+}
+$("playersList").addEventListener("click",e=>{const b=e.target.closest("[data-pick]");if(b)draftPlayer(b.dataset.pick).catch(err=>alert("Erreur : "+err.message))});
+$("search").addEventListener("input",render);$("poolFilter").addEventListener("change",render);
+$("joinBtn").addEventListener("click",()=>connectRoom().catch(e=>setStatus("Impossible de rejoindre : "+e.message,"bad")));
+$("saveSettings").addEventListener("click",async()=>{
+  const rounds=Number($("rounds").value),orderMode=$("orderMode").value;
+  if(state.picks.length && rounds*state.teams.length<state.picks.length){alert("Il y a déjà plus de choix que le nouveau nombre maximal.");return}
+  try{await persist({rounds,orderMode});alert("Paramètres enregistrés.")}catch(e){alert("Erreur : "+e.message)}
+});
+$("importBtn").addEventListener("click",async()=>{
+  const file=$("ehmFile").files[0];if(!file){alert("Choisis d’abord le fichier players.ehm.");return}
+  try{
+    const text=new TextDecoder("windows-1252").decode(await file.arrayBuffer());const lines=text.replace(/^\uFEFF/,"").split(/\r?\n/);
+    const count=Number(lines[0].trim());if(!Number.isInteger(count)||count<1)throw new Error("Première ligne invalide : nombre de joueurs introuvable.");
+    if(lines.length-1<count*20)throw new Error(`Fichier incomplet : ${count} fiches annoncées, mais pas assez de lignes.`);
+    const players=[];
+    for(let i=0;i<count;i++){
+      const rec=lines.slice(1+i*20,1+(i+1)*20);
+      const name=(rec[13]||"").trim();
+      if(name && name!=="-")players.push({id:i,name});
+    }
+    if(!players.length)throw new Error("Aucun nom trouvé. Vérifie qu’il s’agit bien du players.ehm EHM 2nd Generation.");
+    if(state.picks.length&&!confirm("Remplacer la liste des joueurs alors que des choix existent? Les choix actuels seront conservés, mais vérifie qu'ils correspondent à cette liste."))return;
+    await persist({players});
+    $("importStatus").textContent=`Import réussi : ${players.length} joueurs avec noms valides (${count} fiches dans le fichier).`;
+    $("importStatus").className="status ok";
+  }catch(e){$("importStatus").textContent=e.message;$("importStatus").className="status bad"}
+});
+$("undoBtn").addEventListener("click",async()=>{
+ if(!state.picks.length)return;
+ if(!confirm("Annuler le dernier choix pour tous les participants?"))return;
+ const picks=state.picks.slice(0,-1);
+ try{await persist({picks})}catch(e){alert("Erreur : "+e.message)}
+});
+$("exportPicks").addEventListener("click",()=>{
+ const rows=[["Choix","Ronde","Équipe","Joueur","DG sélectionné"]].concat(state.picks.map(p=>[p.number,p.round,p.team,p.playerName,p.byTeam||""]));
+ downloadCsv("fantasy_draft_choix.csv",rows);
+});
+$("exportPlayers").addEventListener("click",()=>downloadCsv("joueurs_ehm.csv",[["ID fiche","Nom"],...state.players.map(p=>[p.id+1,p.name])]));
+$("resetLocal").addEventListener("click",()=>{if(isLive){alert("La réinitialisation distante est désactivée pour éviter d’effacer la salle de tout le monde.");return}if(confirm("Effacer cette salle locale?")){localStorage.removeItem(localKey());state={teams:defaultTeams,players:[],picks:[],rounds:7,orderMode:"snake"};render()}});
+function downloadCsv(name,rows){
+ const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
+ const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);
+}
+function setAuthStatus(message,kind=""){const e=$("authStatus");e.textContent=message;e.className="status "+kind}
+function showAdminApp(){
+  $("draftMain").style.display="grid";
+  $("draftFooter").style.display="block";
+  $("authPanel").style.display="none";
+}
+function showLogin(){
+  $("draftMain").style.display="none";
+  $("draftFooter").style.display="none";
+  $("authPanel").style.display="block";
+}
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!firebaseReady){setAuthStatus("Firebase n’est pas configuré dans ce fichier.","bad");return}
+  const username=$("loginUsername").value.trim().toLowerCase();
+  const password=$("loginPassword").value;
+  if(!/^[a-z0-9._-]{3,32}$/.test(username)){setAuthStatus("Le nom doit contenir 3 à 32 caractères : lettres, chiffres, point, tiret ou soulignement.","bad");return}
+  // Courriel technique interne : il n’est jamais affiché à l’utilisateur.
+  const internalEmail=username+"@login.chsl.invalid";
+  $("loginBtn").disabled=true;
+  try{
+    await signInWithEmailAndPassword(auth,internalEmail,password);
+  }catch(err){
+    setAuthStatus("Connexion refusée. Vérifie le nom d’utilisateur et le mot de passe. ("+err.code+")","bad");
+  }finally{$("loginBtn").disabled=false}
+});
+$("logoutBtn").addEventListener("click",async()=>{try{await signOut(auth)}catch(e){setAuthStatus("Erreur de déconnexion : "+e.message,"bad")}});
+if(firebaseReady){
+ try{
+  app=initializeApp(firebaseConfig);auth=getAuth(app);db=getDatabase(app);
+  onAuthStateChanged(auth,u=>{
+    user=u;isLive=!!u;isAdmin=!!u && ADMIN_UID!=="REMPLACER_PAR_UID_ADMIN" && u.uid===ADMIN_UID;
+    $("logoutBtn").hidden=!u;
+    if(!u){showLogin();setAuthStatus("Connecte-toi avec ton nom d’utilisateur et ton mot de passe.");setStatus("Connexion requise.");return}
+    if(!isAdmin){
+      showLogin();
+      setAuthStatus("Compte connecté, mais cet UID n’est pas autorisé comme administrateur. L’accès DG sera ajouté dans l’étape suivante.","bad");
+      return;
+    }
+    showAdminApp();
+    setAuthStatus("Connecté comme administrateur.","ok");
+    setStatus("Authentifié. Préparation de la salle…","ok");
+    connectRoom().catch(e=>setStatus("Erreur Firebase : "+e.message,"bad"));
+  });
+ }catch(e){isLive=false;showLogin();setAuthStatus("Firebase n’a pas démarré : "+e.message,"bad")}
+}else{showLogin();setAuthStatus("La configuration Firebase semble absente ou incomplète.","bad")}
+</script>
+</body>
+</html>

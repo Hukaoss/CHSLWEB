@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "drafts": {
+      "$room": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}

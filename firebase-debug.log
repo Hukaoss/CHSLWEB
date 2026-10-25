@@ -1,0 +1,103 @@
+[debug] [2026-10-25T01:50:13.247Z] ----------------------------------------------------------------------
+[debug] [2026-10-25T01:50:13.250Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\lespe\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start --only hosting database auth
+[debug] [2026-10-25T01:50:13.250Z] CLI Version:   15.34.1
+[debug] [2026-10-25T01:50:13.250Z] Platform:      win32
+[debug] [2026-10-25T01:50:13.250Z] Node Version:  v24.22.1
+[debug] [2026-10-25T01:50:13.250Z] Detected Agent: unknown
+[debug] [2026-10-25T01:50:13.250Z] Time:          Sat Oct 24 2026 21:50:13 GMT-0400 (heure avancée de l’Est)
+[debug] [2026-10-25T01:50:13.250Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-10-25T01:50:34.052Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-10-25T01:50:34.053Z] > authorizing via signed-in user (gagnon2944@gmail.com)
+[debug] [2026-10-25T01:50:34.148Z] openjdk version "21.0.10" 2026-01-20 LTS
+
+[debug] [2026-10-25T01:50:34.149Z] OpenJDK Runtime Environment Microsoft-13106404 (build 21.0.10+7-LTS)
+OpenJDK 64-Bit Server VM Microsoft-13106404 (build 21.0.10+7-LTS, mixed mode, sharing)
+
+[debug] [2026-10-25T01:50:34.155Z] Parsed Java major version: 21
+[info] i  emulators: Starting emulators: database, hosting {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: database, hosting"}}
+[warn] !  auth: Not starting the auth emulator, make sure you have run firebase init. {"metadata":{"emulator":{"name":"auth"},"message":"Not starting the \u001b[1mauth\u001b[22m emulator, make sure you have run \u001b[1mfirebase init\u001b[22m."}}
+[debug] [2026-10-25T01:50:34.178Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-10-25T01:50:34.178Z] [database] Database Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-10-25T01:50:34.178Z] [hosting] Hosting Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-10-25T01:50:34.179Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"database":[{"address":"127.0.0.1","family":"IPv4","port":9000}],"hosting":[{"address":"127.0.0.1","family":"IPv4","port":5000}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2026-10-25T01:50:34.184Z] Write emulator hub locator at C:\Users\lespe\AppData\Local\Temp\hub-chsl-2ec2c.json
+[debug] [2026-10-25T01:50:34.208Z] Checked if tokens are valid: false, expires at: 1792848566818
+[debug] [2026-10-25T01:50:34.209Z] Checked if tokens are valid: false, expires at: 1792848566818
+[debug] [2026-10-25T01:50:34.209Z] > refreshing access token with scopes: []
+[debug] [2026-10-25T01:50:34.212Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-10-25T01:50:34.212Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-25T01:50:34.467Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-10-25T01:50:34.467Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-10-25T01:50:34.488Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/chsl-2ec2c [none]
+[debug] [2026-10-25T01:50:34.797Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/chsl-2ec2c 200
+[debug] [2026-10-25T01:50:34.797Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/chsl-2ec2c {"projectId":"chsl-2ec2c","projectNumber":"722023115695","displayName":"CHSL","name":"projects/chsl-2ec2c","resources":{"hostingSite":"chsl-2ec2c","realtimeDatabaseInstance":"chsl-2ec2c-default-rtdb"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_e6579c69-158e-445b-9fd3-b7db145fda2e"}
+[debug] [2026-10-25T01:50:34.798Z] database rules config:  [{"instance":"chsl-2ec2c-default-rtdb","rules":"C:\\Users\\lespe\\Desktop\\CHSL WEB TEST\\database.rules.json"}]
+[debug] [2026-10-25T01:50:34.801Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2026-10-25T01:50:34.801Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-10-25T01:50:34.801Z] Ignoring unsupported arg: rules {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: rules"}}
+[debug] [2026-10-25T01:50:34.801Z] Starting Database Emulator with command {"binary":"java","args":["-Duser.language=en","-jar","C:\\Users\\lespe\\.cache\\firebase\\emulators\\firebase-database-emulator-v4.11.2.jar","--host","127.0.0.1","--port",9000,"--single_project_mode","Warning"],"optionalArgs":["port","host","functions_emulator_port","functions_emulator_host","single_project_mode"],"joinArgs":false,"shell":false,"port":9000} {"metadata":{"emulator":{"name":"database"},"message":"Starting Database Emulator with command {\"binary\":\"java\",\"args\":[\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\lespe\\\\.cache\\\\firebase\\\\emulators\\\\firebase-database-emulator-v4.11.2.jar\",\"--host\",\"127.0.0.1\",\"--port\",9000,\"--single_project_mode\",\"Warning\"],\"optionalArgs\":[\"port\",\"host\",\"functions_emulator_port\",\"functions_emulator_host\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":9000}"}}
+[info] i  database: Database Emulator logging to database-debug.log {"metadata":{"emulator":{"name":"database"},"message":"Database Emulator logging to \u001b[1mdatabase-debug.log\u001b[22m"}}
+[debug] [2026-10-25T01:50:35.791Z] 21:50:35.789 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+ {"metadata":{"emulator":{"name":"database"},"message":"21:50:35.789 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started\r\n"}}
+[debug] [2026-10-25T01:50:35.930Z] 21:50:35.930 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
+ {"metadata":{"emulator":{"name":"database"},"message":"21:50:35.930 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000\r\n"}}
+[debug] [2026-10-25T01:50:36.049Z] Checked if tokens are valid: true, expires at: 1792896633467
+[debug] [2026-10-25T01:50:36.049Z] Checked if tokens are valid: true, expires at: 1792896633467
+[debug] [2026-10-25T01:50:36.049Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/chsl-2ec2c/sites 
+[debug] [2026-10-25T01:50:36.620Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/chsl-2ec2c/sites 200
+[debug] [2026-10-25T01:50:36.620Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/chsl-2ec2c/sites {"sites":[{"name":"projects/chsl-2ec2c/sites/chsl-2ec2c","defaultUrl":"https://chsl-2ec2c.web.app","appId":"1:722023115695:web:e87885740100578f6bdd5a","type":"DEFAULT_SITE"}]}
+[debug] [2026-10-25T01:50:36.621Z] Checked if tokens are valid: true, expires at: 1792896633467
+[debug] [2026-10-25T01:50:36.621Z] Checked if tokens are valid: true, expires at: 1792896633467
+[debug] [2026-10-25T01:50:36.621Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/chsl-2ec2c/webApps/1:722023115695:web:e87885740100578f6bdd5a/config [none]
+[debug] [2026-10-25T01:50:36.906Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/chsl-2ec2c/webApps/1:722023115695:web:e87885740100578f6bdd5a/config 200
+[debug] [2026-10-25T01:50:36.906Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/chsl-2ec2c/webApps/1:722023115695:web:e87885740100578f6bdd5a/config {"projectId":"chsl-2ec2c","appId":"1:722023115695:web:e87885740100578f6bdd5a","databaseURL":"https://chsl-2ec2c-default-rtdb.firebaseio.com","storageBucket":"chsl-2ec2c.firebasestorage.app","apiKey":"AIzaSyBrSphFXSApqy0CCI67MsgnYo_W9F4jcws","authDomain":"chsl-2ec2c.firebaseapp.com","messagingSenderId":"722023115695","measurementId":"G-GHP1LBP7JR","projectNumber":"722023115695","version":"2"}
+[debug] [2026-10-25T01:50:36.930Z] Checked if tokens are valid: true, expires at: 1792896633467
+[debug] [2026-10-25T01:50:36.930Z] Checked if tokens are valid: true, expires at: 1792896633467
+[debug] [2026-10-25T01:50:36.930Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/chsl-2ec2c [none]
+[debug] [2026-10-25T01:50:37.055Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/chsl-2ec2c 200
+[debug] [2026-10-25T01:50:37.055Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/chsl-2ec2c {"projectId":"chsl-2ec2c","projectNumber":"722023115695","displayName":"CHSL","name":"projects/chsl-2ec2c","resources":{"hostingSite":"chsl-2ec2c","realtimeDatabaseInstance":"chsl-2ec2c-default-rtdb"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_e6579c69-158e-445b-9fd3-b7db145fda2e"}
+[info] i  hosting[chsl-2ec2c]: Serving hosting files from: public {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: \u001b[1mpublic\u001b[22m"}}
+[info] +  hosting[chsl-2ec2c]: Local server: http://127.0.0.1:5000 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: \u001b[4m\u001b[1mhttp://127.0.0.1:5000\u001b[22m\u001b[24m"}}
+[debug] [2026-10-25T01:50:37.203Z] >>> [apiv2][query] PUT http://127.0.0.1:9000/.settings/rules.json ns=chsl-2ec2c-default-rtdb
+[debug] [2026-10-25T01:50:37.203Z] >>> [apiv2][body] PUT http://127.0.0.1:9000/.settings/rules.json "{\n  \"rules\": {\n    \"drafts\": {\n      \"$room\": {\n        \".read\": \"auth != null\",\n        \".write\": \"auth != null\"\n      }\n    }\n  }\n}\n"
+[debug] [2026-10-25T01:50:37.486Z] 21:50:37.486 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO com.firebase.core.namespace.NamespaceActor - chsl-2ec2c-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 151ms, init: 0ms
+ {"metadata":{"emulator":{"name":"database"},"message":"21:50:37.486 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO com.firebase.core.namespace.NamespaceActor - chsl-2ec2c-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 151ms, init: 0ms\r\n"}}
+[debug] [2026-10-25T01:50:37.569Z] 21:50:37.569 [NamespaceSystem-blocking-namespace-operation-dispatcher-6] INFO com.firebase.core.namespace.StateManager - Namespace chsl-2ec2c-default-rtdb status Active to Active
+ {"metadata":{"emulator":{"name":"database"},"message":"21:50:37.569 [NamespaceSystem-blocking-namespace-operation-dispatcher-6] INFO com.firebase.core.namespace.StateManager - Namespace chsl-2ec2c-default-rtdb status Active to Active\r\n"}}
+[debug] [2026-10-25T01:50:37.591Z] <<< [apiv2][status] PUT http://127.0.0.1:9000/.settings/rules.json 200
+[debug] [2026-10-25T01:50:37.591Z] <<< [apiv2][body] PUT http://127.0.0.1:9000/.settings/rules.json {"status":"ok"}
+[debug] [2026-10-25T01:50:37.596Z] Could not find VSCode notification endpoint: TypeError: fetch failed. If you are not running the Firebase SQL Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌──────────┬────────────────┬────────────────────────────────┐
+│ Emulator │ Host:Port      │ View in Emulator UI            │
+├──────────┼────────────────┼────────────────────────────────┤
+│ Database │ 127.0.0.1:9000 │ http://127.0.0.1:4000/database │
+├──────────┼────────────────┼────────────────────────────────┤
+│ Hosting  │ 127.0.0.1:5000 │ n/a                            │
+└──────────┴────────────────┴────────────────────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:01:51:14 +0000] "GET /? HTTP/1.1" 200 - "http://127.0.0.1:5000/?" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:01:51:14 +0000] \"GET /? HTTP/1.1\" 200 - \"http://127.0.0.1:5000/?\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:01:51:14 +0000] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 187 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:01:51:14 +0000] \"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1\" 404 187 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:01:57:47 +0000] "GET /? HTTP/1.1" 200 - "http://127.0.0.1:5000/?" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:01:57:47 +0000] \"GET /? HTTP/1.1\" 200 - \"http://127.0.0.1:5000/?\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:01:57:47 +0000] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 187 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:01:57:47 +0000] \"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1\" 404 187 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:01:57:47 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://127.0.0.1:5000/?" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:01:57:47 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"http://127.0.0.1:5000/?\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:02:00:44 +0000] "GET /? HTTP/1.1" 200 - "http://127.0.0.1:5000/?" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:02:00:44 +0000] \"GET /? HTTP/1.1\" 200 - \"http://127.0.0.1:5000/?\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:02:00:44 +0000] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 187 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:02:00:44 +0000] \"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1\" 404 187 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:02:00:44 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://127.0.0.1:5000/?" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:02:00:44 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"http://127.0.0.1:5000/?\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:02:03:00 +0000] "GET /? HTTP/1.1" 200 - "http://127.0.0.1:5000/?" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:02:03:00 +0000] \"GET /? HTTP/1.1\" 200 - \"http://127.0.0.1:5000/?\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:02:03:00 +0000] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 187 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:02:03:00 +0000] \"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1\" 404 187 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:02:07:47 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://127.0.0.1:5000/?" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:02:07:47 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"http://127.0.0.1:5000/?\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:02:07:48 +0000] "GET /? HTTP/1.1" 200 - "http://127.0.0.1:5000/?" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:02:07:48 +0000] \"GET /? HTTP/1.1\" 200 - \"http://127.0.0.1:5000/?\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:02:10:41 +0000] "GET /? HTTP/1.1" 200 - "http://127.0.0.1:5000/?" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:02:10:41 +0000] \"GET /? HTTP/1.1\" 200 - \"http://127.0.0.1:5000/?\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:02:11:34 +0000] "GET / HTTP/1.1" 200 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:02:11:34 +0000] \"GET / HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [25/Oct/2026:02:16:04 +0000] "GET / HTTP/1.1" 200 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [25/Oct/2026:02:16:04 +0000] \"GET / HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36\""}}

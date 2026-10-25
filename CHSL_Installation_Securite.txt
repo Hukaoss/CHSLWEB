@@ -1,0 +1,33 @@
+CHSL — Installation de la sécurité Firebase
+===============================================
+
+1) Activer la connexion
+- Dans Firebase Console, ouvrez Authentication > Sign-in method.
+- Activez Email/Password.
+- Dans Authentication > Users, créez le compte administrateur avec l'identifiant technique utilisé par la page HTML.
+  Exemple : admin@login.chsl.invalid
+- L'utilisateur se connecte dans la page avec le nom d'utilisateur correspondant (ex. admin) et son mot de passe.
+- Ne partagez jamais le mot de passe. Ne l'inscrivez pas dans le code.
+
+Important : le nom d'utilisateur est converti par la page en une adresse technique interne. Cette adresse n'est pas affichée aux DG. Les fonctions de récupération par courriel ne fonctionneront pas avec une adresse .invalid.
+
+2) Récupérer l'UID de l'administrateur
+- Dans Firebase Console > Authentication > Users, ouvrez le compte administrateur.
+- Copiez son UID.
+- Dans le fichier HTML, remplacez REMPlACER_PAR_UID_ADMIN / REMPLACER_PAR_UID_ADMIN par cet UID selon le commentaire prévu dans le code.
+- Dans les règles ci-dessous, remplacez REMPLACER_PAR_UID_ADMIN par le même UID.
+
+3) Publier les règles
+- Dans Firebase Console > Realtime Database > Rules, collez le contenu du fichier CHSL_Realtime_Database_Rules.json.
+- Remplacez d'abord REMPLACER_PAR_UID_ADMIN par l'UID réel, puis publiez.
+
+4) Limites importantes de cette version
+- Ces règles autorisent la lecture des données de draft à tout utilisateur authentifié.
+- Seul l'UID administrateur peut écrire dans /drafts.
+- Les DG ne peuvent donc pas faire eux-mêmes leurs choix avec cette version; il faut ajouter des règles et une structure de données pour les rôles des DG avant d'activer leur participation.
+- Le contrôle visuel dans le HTML n'est pas une protection de sécurité en soi : les règles Firebase sont la protection côté base de données.
+- N'utilisez pas les règles de test qui autorisent tous les utilisateurs à écrire en production.
+
+5) Nom d'utilisateur
+- Si la page transforme le nom d'utilisateur en username@login.chsl.invalid, créez dans Firebase Authentication un utilisateur avec exactement cette adresse technique et le mot de passe choisi par l'administrateur.
+- Vérifiez que Firebase accepte cette adresse lors de la création du compte. Ne communiquez pas le mot de passe dans le chat.

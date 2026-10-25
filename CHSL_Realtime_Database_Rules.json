@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "drafts": {
+      "$room": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === 'REMPLACER_PAR_UID_ADMIN'"
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+APPLICATION DE REPÊCHAGE NHL CHSL — DÉPLOIEMENT FIREBASE
+
+Le fichier public/index.html contient déjà la configuration Web du projet Firebase chsl-2ec2c et l'URL Realtime Database fournie.
+
+AVANT DE PUBLIER
+1. Dans Firebase Console, ouvrez Authentication > Sign-in method et activez Anonymous (Anonyme).
+2. Vérifiez que Realtime Database est créée dans le projet chsl-2ec2c.
+3. IMPORTANT SÉCURITÉ : les règles incluses permettent à tout utilisateur connecté anonymement qui atteint l'application de lire et modifier toutes les salles de repêchage. C'est acceptable uniquement pour un test contrôlé. Avant une vraie ligue, il faut mettre en place des permissions d'organisateur/DG et limiter les actions d'administration. Ne stockez pas de données sensibles.
+
+DÉPLOYER SUR WINDOWS
+1. Installez Node.js LTS depuis https://nodejs.org/ puis fermez/réouvrez le terminal.
+2. Téléchargez et décompressez ce ZIP dans un dossier simple, par exemple Documents\FantasyDraftNHL_CHSL.
+3. Ouvrez le dossier décompressé dans l'Explorateur de fichiers. Cliquez dans la barre d'adresse, tapez cmd puis Entrée.
+4. Dans la fenêtre noire, exécutez ces commandes une par une :
+
+   npm install -g firebase-tools
+   firebase login
+   firebase deploy
+
+5. Si demandé, connectez-vous au compte Google qui possède le projet Firebase chsl-2ec2c. La commande deploy publiera le site et les règles de la base.
+6. À la fin, Firebase affichera une URL Hosting semblable à https://chsl-2ec2c.web.app. Copiez l'URL et ouvrez-la pour tester.
+
+INTÉGRER À GOOGLE SITES
+1. Ouvrez votre Google Site en mode édition.
+2. Choisissez Insérer > Intégrer > Par URL.
+3. Collez l'URL Hosting HTTPS affichée par Firebase, puis insérez et publiez le site.
+
+TESTER LE MODE MULTI-DG
+1. Ouvrez l'URL Hosting dans deux fenêtres de navigateur (ou un ordinateur et un téléphone).
+2. Dans les deux, utilisez le même code de salle, par défaut CHSL-DRAFT.
+3. Importez players.ehm une seule fois avant de commencer le repêchage.
+4. Effectuez un choix dans une fenêtre et vérifiez qu'il apparaît dans l'autre.
+
+À SAVOIR
+- Le site n'est pas encore déployé par ce ZIP : vous devez exécuter les commandes ci-dessus.
+- La synchronisation ne fonctionnera pas si Authentication anonyme n'est pas activée ou si les règles ne sont pas déployées.
+- Le code de salle n'est pas un mot de passe. Toute personne connaissant l'URL peut tenter de rejoindre la salle. Pour un vrai événement, sécurisez les droits avant le lancement.

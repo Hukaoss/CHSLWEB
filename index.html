@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fantasy Draft NHL — EHM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #070c14;
+  --bg-gradient: radial-gradient(circle at 50% 0%, #12223a 0%, #070c14 70%);
+  --panel: rgba(16, 26, 43, 0.75);
+  --panel-solid: #0d1626;
+  --panel-hover: #152238;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-focus: #3b82f6;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.25);
+  --green: #10b981;
+  --green-glow: rgba(16, 185, 129, 0.2);
+  --red: #f43f5e;
+  --red-glow: rgba(244, 63, 94, 0.2);
+  --card-radius: 16px;
+  --input-radius: 10px;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+header {
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(7, 12, 20, 0.8);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+header h1 {
+  margin: 0;
+  font-size: clamp(20px, 2.5vw, 26px);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #fff 30%, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+header p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+main {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: minmax(300px, 0.9fr) minmax(360px, 1.3fr) minmax(320px, 1fr);
+  gap: 20px;
+}
+
+.panel {
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--line);
+  border-radius: var(--card-radius);
+  padding: 20px;
+  min-width: 0;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.2s ease;
+}
+.panel:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 16px;
+  letter-spacing: -0.3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+h3 {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 20px 0 10px;
+  color: #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  margin: 12px 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+input, select, button, textarea {
+  font: inherit;
+  border-radius: var(--input-radius);
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  background: rgba(13, 22, 38, 0.8);
+  color: var(--text);
+  width: 100%;
+  min-width: 0;
+  outline: none;
+  transition: all 0.2s ease;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--line-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: var(--panel-solid);
+}
+
+button {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+button:hover {
+  background: #334155;
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+button:active {
+  transform: translateY(0);
+}
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+button.primary {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border: none;
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+button.primary:hover {
+  background: linear-gradient(135deg, #0369a1, #0284c7);
+}
+
+button.good {
+  background: linear-gradient(135deg, #059669, #047857);
+  border: none;
+  box-shadow: 0 4px 12px var(--green-glow);
+}
+button.good:hover {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+button.danger {
+  background: linear-gradient(135deg, #e11d48, #be123c);
+  border: none;
+  box-shadow: 0 4px 12px var(--red-glow);
+}
+button.danger:hover {
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+.auth-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: var(--muted);
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.auth-tab.active {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.row { display: flex; gap: 10px; align-items: flex-end; }
+.row > * { flex: 1; }
+.small { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.status {
+  padding: 10px 14px;
+  border-radius: var(--input-radius);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  margin: 12px 0;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  word-break: break-word;
+}
+.status.ok {
+  color: var(--green);
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.08);
+}
+.status.bad {
+  color: var(--red);
+  border-color: rgba(244, 63, 94, 0.3);
+  background: rgba(244, 63, 94, 0.08);
+}
+
+.list {
+  max-height: 440px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--input-radius);
+  margin-top: 12px;
+  background: rgba(8, 14, 26, 0.6);
+}
+.list::-webkit-scrollbar { width: 6px; }
+.list::-webkit-scrollbar-track { background: transparent; }
+.list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 99px; }
+
+.player {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.15s ease;
+}
+.player:last-child { border-bottom: 0; }
+.player:hover { background: rgba(255, 255, 255, 0.03); }
+.player .name { font-weight: 600; font-size: 14px; }
+.player .meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.player button { width: auto; padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: rgba(56, 189, 248, 0.1);
+  border-radius: 99px;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.pickrow {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.15s ease;
+}
+.pickrow:hover { background: rgba(255, 255, 255, 0.02); }
+.picknum { font-weight: 800; font-size: 15px; color: var(--accent); }
+.pickname { font-weight: 600; font-size: 14px; }
+.pickmeta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 14px 0;
+}
+.kpi {
+  padding: 12px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--line);
+  border-radius: var(--input-radius);
+  text-align: center;
+}
+.kpi strong { display: block; font-size: 22px; font-weight: 800; color: #fff; }
+.kpi span { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+details {
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  padding-top: 14px;
+}
+summary {
+  cursor: pointer;
+  color: #cbd5e1;
+  font-weight: 600;
+  font-size: 13px;
+  user-select: none;
+}
+summary:hover { color: #fff; }
+
+footer {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 12px 24px 32px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+#authPanel {
+  max-width: 440px;
+  margin: 60px auto;
+  padding: 28px;
+  background: var(--panel);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--line);
+  border-radius: var(--card-radius);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+#authPanel h2 { font-size: 20px; text-transform: none; color: #fff; margin-bottom: 8px; justify-content: center; }
+
+#draftMain, #draftFooter { display: none; }
+
+@media(max-width: 1100px) {
+  main { grid-template-columns: 1fr 1fr; }
+  .right { grid-column: 1 / -1; }
+}
+@media(max-width: 700px) {
+  main { grid-template-columns: 1fr; padding: 12px; }
+  .right { grid-column: auto; }
+  .row { flex-wrap: wrap; }
+  header { position: static; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .kpis { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🏒 Fantasy Draft NHL</h1>
+    <p>Repêchage en direct • 30 équipes • Joueurs importés depuis EHM</p>
+  </div>
+  <div class="header-actions">
+    <button type="button" class="logoutBtn danger" hidden>🚪 Déconnexion</button>
+  </div>
+</header>
+
+<section id="authPanel">
+  <h2>🔐 Espace Authentification</h2>
+  <div class="auth-tabs">
+    <button type="button" id="tabLogin" class="auth-tab active">Connexion</button>
+    <button type="button" id="tabRegister" class="auth-tab">Créer un compte</button>
+  </div>
+
+  <!-- Formulaire de Connexion -->
+  <form id="loginForm">
+    <label for="loginUsername">Courriel Firebase</label>
+    <input id="loginUsername" type="email" autocomplete="username" required placeholder="admin@chsl.com">
+    
+    <label for="loginPassword">Mot de passe</label>
+    <input id="loginPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Mot de passe">
+    
+    <button type="submit" id="loginBtn" class="primary" style="margin-top:16px; width:100%;">Se connecter</button>
+  </form>
+
+  <!-- Formulaire de Création de Compte -->
+  <form id="registerForm" hidden>
+    <label for="regUsername">Courriel Firebase</label>
+    <input id="regUsername" type="email" autocomplete="email" required placeholder="nouveau@chsl.com">
+    
+    <label for="regPassword">Mot de passe (6 car. min.)</label>
+    <input id="regPassword" type="password" autocomplete="new-password" minlength="6" required placeholder="Nouveau mot de passe">
+    
+    <button type="submit" id="registerBtn" class="good" style="margin-top:16px; width:100%;">Créer mon compte</button>
+  </form>
+
+  <div id="authStatus" class="status">Connexion requise.</div>
+  <button type="button" class="logoutBtn danger" style="margin-top: 12px; width: 100%;" hidden>🚪 Déconnexion</button>
+</section>
+
+<main id="draftMain">
+  <section class="panel">
+    <h2>1. Salle de draft</h2>
+    <label for="room">Code de salle</label>
+    <div class="row">
+      <input id="room" value="CHSL-DRAFT" maxlength="32" aria-label="Code de salle">
+      <button id="joinBtn" class="primary">Rejoindre</button>
+    </div>
+    <div id="connection" class="status">Mode démo local. Configure Firebase pour synchroniser plusieurs participants.</div>
+    
+    <label for="teamSelect">Mon équipe / équipe du DG</label>
+    <select id="teamSelect"></select>
+    
+    <div class="row">
+      <div>
+        <label for="rounds">Nombre de rondes</label>
+        <select id="rounds">
+          <option>1</option><option>2</option><option>3</option><option>5</option>
+          <option selected>7</option><option>10</option><option>15</option>
+        </select>
+      </div>
+      <div>
+        <label for="orderMode">Ordre des rondes</label>
+        <select id="orderMode">
+          <option value="snake" selected>Serpentin</option>
+          <option value="same">Même ordre</option>
+        </select>
+      </div>
+    </div>
+    <button id="saveSettings" style="margin-top:12px">Enregistrer les paramètres</button>
+    
+    <h3>Importer la liste EHM</h3>
+    <label for="ehmFile">Fichier players.ehm</label>
+    <input id="ehmFile" type="file" accept=".ehm,.txt">
+    <div class="small" style="margin-top:6px;">Seuls les noms et l'ordre des fiches sont importés.</div>
+    <button id="importBtn" class="good" style="margin-top:10px">Importer les joueurs</button>
+    <div id="importStatus" class="status">Aucun fichier importé.</div>
+    
+    <details>
+      <summary>Configuration & Options avancées</summary>
+      <p class="small" style="margin-top:8px;">Pour le direct à plusieurs, suivez le fichier LISEZ-MOI fourni avec le projet.</p>
+      <button id="exportPlayers" style="margin-top:6px">Exporter la liste (CSV)</button>
+      <button id="resetLocal" class="danger" style="margin-top:8px">Réinitialiser la salle locale</button>
+    </details>
+  </section>
+
+  <section class="panel">
+    <h2>2. Joueurs disponibles</h2>
+    <div class="row">
+      <div>
+        <label for="search">Rechercher</label>
+        <input id="search" placeholder="Ex. Sidney Crosby">
+      </div>
+      <div style="max-width:130px">
+        <label for="poolFilter">Affichage</label>
+        <select id="poolFilter">
+          <option value="available">Disponibles</option>
+          <option value="all">Tous</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="kpis">
+      <div class="kpi"><strong id="availableCount">0</strong><span>Disponibles</span></div>
+      <div class="kpi"><strong id="pickedCount">0</strong><span>Repêchés</span></div>
+      <div class="kpi"><strong id="currentPick">1</strong><span>Choix actuel</span></div>
+    </div>
+    
+    <div id="nextPick" class="status">En attente des joueurs.</div>
+    <div id="playersList" class="list">
+      <div class="player"><span class="small">Importe players.ehm pour commencer.</span></div>
+    </div>
+  </section>
+
+  <section class="panel right">
+    <h2>3. Tableau du repêchage</h2>
+    <div class="row">
+      <button id="undoBtn" class="danger">Annuler le dernier choix</button>
+      <button id="exportPicks">Exporter les choix (CSV)</button>
+    </div>
+    <div id="draftStatus" class="status">Aucun choix effectué.</div>
+    <div id="picksList" class="list" style="max-height:580px">
+      <div class="player"><span class="small">Les choix apparaîtront ici en direct.</span></div>
+    </div>
+  </section>
+</main>
+
+<footer id="draftFooter">
+  Panneau d’administration CHSL. Les permissions doivent aussi être appliquées dans les règles Firebase Realtime Database.
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, onValue, set, get, runTransaction, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBrSphFXSApqy0CCI67MsgnYo_W9F4jcws",
+  authDomain: "chsl-2ec2c.firebaseapp.com",
+  databaseURL: "https://chsl-2ec2c-default-rtdb.firebaseio.com",
+  projectId: "chsl-2ec2c",
+  storageBucket: "chsl-2ec2c.firebasestorage.app",
+  messagingSenderId: "722023115695",
+  appId: "1:722023115695:web:e87885740100578f6bdd5a",
+  measurementId: "G-GHP1LBP7JR"
+};
+const firebaseReady = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("REMPLACER") && firebaseConfig.databaseURL && !firebaseConfig.databaseURL.includes("REMPLACER");
+const ADMIN_UID = "QfL9c1ScYvPVcmpDlaenCMQ6dRl1";
+
+const defaultTeams = [
+"ANA — Anaheim Ducks","BOS — Boston Bruins","BUF — Buffalo Sabres","CAR — Carolina Hurricanes","CBJ — Columbus Blue Jackets",
+"CGY — Calgary Flames","CHI — Chicago Blackhawks","COL — Colorado Avalanche","DAL — Dallas Stars","DET — Detroit Red Wings",
+"EDM — Edmonton Oilers","FLA — Florida Panthers","LAK — Los Angeles Kings","MIN — Minnesota Wild","MTL — Montreal Canadiens",
+"NJD — New Jersey Devils","NSH — Nashville Predators","NYI — New York Islanders","NYR — New York Rangers","OTT — Ottawa Senators",
+"PHI — Philadelphia Flyers","PIT — Pittsburgh Penguins","SEA — Seattle Kraken","SJS — San Jose Sharks","STL — St. Louis Blues",
+"TBL — Tampa Bay Lightning","TOR — Toronto Maple Leafs","UTA — Utah Mammoth","VAN — Vancouver Canucks","WSH — Washington Capitals"
+];
+let app, auth, db, user = null, isLive = false, isAdmin = false, roomCode = "CHSL-DRAFT", roomRef = null, unsubscribe = null;
+let state = {teams:defaultTeams, players:[], picks:[], rounds:7, orderMode:"snake"};
+const $ = id => document.getElementById(id);
+const escapeHtml = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function localKey(){return "ehmFantasyDraft:"+roomCode}
+function readLocal(){try{return JSON.parse(localStorage.getItem(localKey()))||null}catch{return null}}
+function saveLocal(){localStorage.setItem(localKey(),JSON.stringify(state))}
+function teamIndexForPick(n){
+  const round=Math.floor((n-1)/state.teams.length), slot=(n-1)%state.teams.length;
+  return state.orderMode==="snake" && round%2===1 ? state.teams.length-1-slot : slot;
+}
+function teamForPick(n){return state.teams[teamIndexForPick(n)]||"Équipe inconnue"}
+function nextPickNumber(){return state.picks.length+1}
+function selectedTeam(){return $("teamSelect").value}
+function setStatus(text,kind=""){const e=$("connection");e.textContent=text;e.className="status "+kind}
+
+async function connectRoom(){
+  if(!user || !isAdmin){setStatus("Connexion administrateur requise pour ouvrir la salle.","bad");return}
+  roomCode=$("room").value.trim().toUpperCase().replace(/[^A-Z0-9-]/g,"").slice(0,32)||"CHSL-DRAFT";
+  $("room").value=roomCode;
+  if(unsubscribe){unsubscribe();unsubscribe=null}
+  if(isLive){
+    roomRef=ref(db,"drafts/"+roomCode);
+    const snap=await get(roomRef);
+    if(!snap.exists()) await set(roomRef,{teams:defaultTeams,players:[],picks:[],rounds:7,orderMode:"snake",createdAt:Date.now()});
+    unsubscribe=onValue(roomRef,s=>{if(s.exists()){state={...state,...s.val()};state.teams=state.teams||defaultTeams;state.players=state.players||[];state.picks=state.picks||[];render()}},err=>setStatus("Erreur de salle : "+err.message,"bad"));
+    setStatus("Connecté en direct à la salle "+roomCode,"ok");
+  }else{
+    const saved=readLocal();state=saved||{teams:defaultTeams,players:[],picks:[],rounds:7,orderMode:"snake"};
+    render();setStatus("Mode démo local : ce navigateur seulement.","");
+  }
+}
+
+async function persist(patch){
+  if(!isAdmin) throw new Error("Action réservée à l’administrateur.");
+  if(isLive){await update(roomRef,patch)}
+  else {state={...state,...patch};saveLocal();render()}
+}
+
+function renderTeams(){
+  const previous=$("teamSelect").value;
+  $("teamSelect").innerHTML=state.teams.map((t,i)=>`<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+  if(state.teams.includes(previous)) $("teamSelect").value=previous;
+  $("rounds").value=String(state.rounds||7);$("orderMode").value=state.orderMode||"snake";
+}
+
+function render(){
+  renderTeams();
+  const picked=new Set(state.picks.map(p=>p.playerId));
+  const q=$("search").value.trim().toLocaleLowerCase("fr");
+  const pool=$("poolFilter").value;
+  const players=state.players.filter(p=>(!q||p.name.toLocaleLowerCase("fr").includes(q))&&(pool==="all"||!picked.has(p.id)));
+  $("availableCount").textContent=state.players.length-picked.size;
+  $("pickedCount").textContent=picked.size;
+  $("currentPick").textContent=nextPickNumber();
+  const total=(Number(state.rounds)||7)*state.teams.length;
+  const next=nextPickNumber();
+  $("nextPick").textContent=next>total?"Repêchage terminé !":`Choix #${next} · ${teamForPick(next)}`;
+  $("playersList").innerHTML=players.slice(0,400).map(p=>{
+    const done=picked.has(p.id);
+    return `<div class="player"><div><div class="name">${escapeHtml(p.name)}</div><div class="meta">Fiche EHM #${p.id+1}${done?" · Déjà repêché":""}</div></div><button class="primary" data-pick="${p.id}" ${done||next>total?"disabled":""}>Repêcher</button></div>`;
+  }).join("")||'<div class="player"><span class="small">Aucun joueur trouvé. Vérifie la recherche ou importe players.ehm.</span></div>';
+  $("draftStatus").textContent=`${picked.size} choix enregistrés sur ${total}. ${isLive?"Synchronisation en direct activée.":"Les choix restent dans ce navigateur."}`;
+  $("picksList").innerHTML=state.picks.slice().reverse().map(p=>`<div class="pickrow"><div class="picknum">#${p.number}</div><div><div class="pickname">${escapeHtml(p.playerName)}</div><div class="pickmeta">${escapeHtml(p.team)} · Ronde ${p.round}</div></div><span class="chip">${escapeHtml(p.team.split(" — ")[0])}</span></div>`).join("")||'<div class="player"><span class="small">Les choix apparaîtront ici.</span></div>';
+}
+
+async function draftPlayer(id){
+  if(!isAdmin){alert("Le panneau de gestion est réservé à l’administrateur pour le moment.");return}
+  const p=state.players.find(x=>x.id===Number(id));if(!p)return;
+  const num=nextPickNumber(), total=(Number(state.rounds)||7)*state.teams.length;
+  if(num>total){alert("Le repêchage est terminé.");return}
+  if(state.picks.some(x=>x.playerId===p.id)){alert("Ce joueur a déjà été repêché.");return}
+  const team=teamForPick(num);
+  const confirmed=confirm(`CONFIRMER LE CHOIX #${num}\n\nJoueur : ${p.name}\nÉquipe qui sélectionne : ${team}\nRonde : ${Math.floor((num-1)/state.teams.length)+1}\n\nÊtes-vous sûr de vouloir prendre ce joueur ?\n\nUne fois confirmé, le choix sera enregistré et synchronisé en direct.`);
+  if(!confirmed)return;
+  if(state.picks.some(x=>x.playerId===p.id)){alert("Ce joueur vient d’être repêché. Le tableau a été actualisé.");return}
+  const pick={number:num,round:Math.floor((num-1)/state.teams.length)+1,team,playerId:p.id,playerName:p.name,byTeam:selectedTeam(),createdAt:Date.now()};
+  if(isLive){
+    const picksRef=ref(db,"drafts/"+roomCode+"/picks");
+    const result=await runTransaction(picksRef,current=>{
+      current=current||[];
+      if(current.length!==num-1||current.some(x=>Number(x.playerId)===Number(p.id)))return;
+      return [...current,pick];
+    });
+    if(!result.committed){
+      const latest=await get(picksRef);
+      if(latest.exists())state.picks=latest.val()||[];
+      render();
+      alert(state.picks.some(x=>Number(x.playerId)===Number(p.id))?"Ce joueur vient d’être repêché par quelqu’un d’autre.":"Le repêchage a changé pendant la confirmation. Le tableau est actualisé; vérifie le prochain choix et réessaie.");
+      return;
+    }
+    state.picks=result.snapshot.val()||[];
+    render();
+    alert(`Choix confirmé !\n${p.name} est sélectionné par ${team}.`);
+  }else{
+    state.picks.push(pick);saveLocal();render();
+    alert(`Choix confirmé !\n${p.name} est sélectionné par ${team}.`);
+  }
+}
+
+$("playersList").addEventListener("click",e=>{const b=e.target.closest("[data-pick]");if(b)draftPlayer(b.dataset.pick).catch(err=>alert("Erreur : "+err.message))});
+$("search").addEventListener("input",render);$("poolFilter").addEventListener("change",render);
+$("joinBtn").addEventListener("click",()=>connectRoom().catch(e=>setStatus("Impossible de rejoindre : "+e.message,"bad")));
+$("saveSettings").addEventListener("click",async()=>{
+  const rounds=Number($("rounds").value),orderMode=$("orderMode").value;
+  if(state.picks.length && rounds*state.teams.length<state.picks.length){alert("Il y a déjà plus de choix que le nouveau nombre maximal.");return}
+  try{await persist({rounds,orderMode});alert("Paramètres enregistrés.")}catch(e){alert("Erreur : "+e.message)}
+});
+
+$("importBtn").addEventListener("click",async()=>{
+  const file=$("ehmFile").files[0];if(!file){alert("Choisis d’abord le fichier players.ehm.");return}
+  try{
+    const text=new TextDecoder("windows-1252").decode(await file.arrayBuffer());const lines=text.replace(/^\uFEFF/,"").split(/\r?\n/);
+    const count=Number(lines[0].trim());if(!Number.isInteger(count)||count<1)throw new Error("Première ligne invalide : nombre de joueurs introuvable.");
+    if(lines.length-1<count*20)throw new Error(`Fichier incomplet : ${count} fiches annoncées, mais pas assez de lignes.`);
+    const players=[];
+    for(let i=0;i<count;i++){
+      const rec=lines.slice(1+i*20,1+(i+1)*20);
+      const name=(rec[13]||"").trim();
+      if(name && name!=="-")players.push({id:i,name});
+    }
+    if(!players.length)throw new Error("Aucun nom trouvé. Vérifie qu’il s’agit bien du players.ehm EHM 2nd Generation.");
+    if(state.picks.length&&!confirm("Remplacer la liste des joueurs alors que des choix existent? Les choix actuels seront conservés, mais vérifie qu'ils correspondent à cette liste."))return;
+    await persist({players});
+    $("importStatus").textContent=`Import réussi : ${players.length} joueurs avec noms valides (${count} fiches dans le fichier).`;
+    $("importStatus").className="status ok";
+  }catch(e){$("importStatus").textContent=e.message;$("importStatus").className="status bad"}
+});
+
+$("undoBtn").addEventListener("click",async()=>{
+ if(!state.picks.length)return;
+ if(!confirm("Annuler le dernier choix pour tous les participants?"))return;
+ const picks=state.picks.slice(0,-1);
+ try{await persist({picks})}catch(e){alert("Erreur : "+e.message)}
+});
+
+$("exportPicks").addEventListener("click",()=>{
+ const rows=[["Choix","Ronde","Équipe","Joueur","DG sélectionné"]].concat(state.picks.map(p=>[p.number,p.round,p.team,p.playerName,p.byTeam||""]));
+ downloadCsv("fantasy_draft_choix.csv",rows);
+});
+
+$("exportPlayers").addEventListener("click",()=>downloadCsv("joueurs_ehm.csv",[["ID fiche","Nom"],...state.players.map(p=>[p.id+1,p.name])]));
+
+$("resetLocal").addEventListener("click",()=>{if(isLive){alert("La réinitialisation distante est désactivée pour éviter d’effacer la salle de tout le monde.");return}if(confirm("Effacer cette salle locale?")){localStorage.removeItem(localKey());state={teams:defaultTeams,players:[],picks:[],rounds:7,orderMode:"snake"};render()}});
+
+function downloadCsv(name,rows){
+ const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
+ const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);
+}
+
+function setAuthStatus(message,kind=""){const e=$("authStatus");e.textContent=message;e.className="status "+kind}
+function updateLogoutButtonsVisibility(show) {
+  document.querySelectorAll(".logoutBtn").forEach(btn => {
+    btn.hidden = !show;
+  });
+}
+
+function showAdminApp(){
+  $("draftMain").style.display="grid";
+  $("draftFooter").style.display="block";
+  $("authPanel").style.display="none";
+  updateLogoutButtonsVisibility(true);
+}
+function showLogin(){
+  $("draftMain").style.display="none";
+  $("draftFooter").style.display="none";
+  $("authPanel").style.display="block";
+}
+
+// Gestion de l'alternance d'onglets (Connexion vs Inscription)
+$("tabLogin").addEventListener("click", () => {
+  $("tabLogin").classList.add("active");
+  $("tabRegister").classList.remove("active");
+  $("loginForm").hidden = false;
+  $("registerForm").hidden = true;
+  setAuthStatus(user ? "Connecté : " + user.email : "Connexion requise.");
+});
+
+$("tabRegister").addEventListener("click", () => {
+  $("tabRegister").classList.add("active");
+  $("tabLogin").classList.remove("active");
+  $("loginForm").hidden = true;
+  $("registerForm").hidden = false;
+  setAuthStatus("Saisissez vos identifiants pour créer un compte.");
+});
+
+// Connexion
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!firebaseReady){setAuthStatus("Firebase n’est pas configuré dans ce fichier.","bad");return}
+  const email=$("loginUsername").value.trim().toLowerCase();
+  const password=$("loginPassword").value;
+  if(!email){setAuthStatus("Entre le courriel du compte Firebase.","bad");return}
+  $("loginBtn").disabled=true;
+  try{
+    await signInWithEmailAndPassword(auth,email,password);
+  }catch(err){
+    setAuthStatus("Connexion refusée : "+err.message,"bad");
+  }finally{$("loginBtn").disabled=false}
+});
+
+// Création de compte
+$("registerForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if(!firebaseReady){setAuthStatus("Firebase n’est pas configuré.","bad");return}
+  const email = $("regUsername").value.trim().toLowerCase();
+  const password = $("regPassword").value;
+  $("registerBtn").disabled = true;
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    setAuthStatus("Compte créé avec succès ! UID : " + cred.user.uid, "ok");
+  } catch(err) {
+    setAuthStatus("Erreur de création : " + err.message, "bad");
+  } finally {
+    $("registerBtn").disabled = false;
+  }
+});
+
+// Gestion de la Déconnexion sur tous les boutons dédiés
+document.querySelectorAll(".logoutBtn").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      setAuthStatus("Déconnecté avec succès.");
+      updateLogoutButtonsVisibility(false);
+    } catch(e) {
+      setAuthStatus("Erreur de déconnexion : " + e.message, "bad");
+    }
+  });
+});
+
+if(firebaseReady){
+ try{
+  app=initializeApp(firebaseConfig);auth=getAuth(app);db=getDatabase(app);
+  onAuthStateChanged(auth,u=>{
+    user=u;isLive=!!u;isAdmin=!!u && u.uid===ADMIN_UID;
+    if(!u){
+      showLogin();
+      updateLogoutButtonsVisibility(false);
+      setStatus("Connexion requise.");
+      return;
+    }
+    if(!isAdmin){
+      showLogin();
+      updateLogoutButtonsVisibility(true);
+      setAuthStatus("Compte connecté (" + u.email + "), mais cet UID n’est pas dans ADMIN_UID (" + u.uid + ").","bad");
+      return;
+    }
+    showAdminApp();
+    setAuthStatus("Connecté comme administrateur (" + u.email + ").","ok");
+    setStatus("Authentifié. Préparation de la salle…","ok");
+    connectRoom().catch(e=>setStatus("Erreur Firebase : "+e.message,"bad"));
+  });
+ }catch(e){isLive=false;showLogin();updateLogoutButtonsVisibility(false);setAuthStatus("Firebase n’a pas démarré : "+e.message,"bad")}
+}else{showLogin();updateLogoutButtonsVisibility(false);setAuthStatus("La configuration Firebase semble absente ou incomplète.","bad")}
+</script>
+</body>
+</html>
