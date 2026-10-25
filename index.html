@@ -96,6 +96,9 @@ main {
 .panel:hover {
   border-color: rgba(255, 255, 255, 0.15);
 }
+.panel.full-width {
+  grid-column: 1 / -1;
+}
 
 h2 {
   font-size: 16px;
@@ -150,7 +153,7 @@ button {
   border-color: rgba(255, 255, 255, 0.1);
   color: #f8fafc;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 650;
   font-size: 13px;
   display: inline-flex;
   align-items: center;
@@ -321,6 +324,24 @@ button.danger:hover {
 .kpi strong { display: block; font-size: 22px; font-weight: 800; color: #fff; }
 .kpi span { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+.user-card {
+  background: rgba(13, 22, 38, 0.8);
+  border: 1px solid var(--line);
+  border-radius: var(--input-radius);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.user-card .user-email { font-weight: 700; font-size: 13px; color: #fff; }
+.user-card .user-meta { font-size: 11px; color: var(--muted); }
+
 details {
   border-top: 1px solid var(--line);
   margin-top: 16px;
@@ -417,6 +438,45 @@ footer {
 </section>
 
 <main id="draftMain">
+  <!-- Panneau Admin : Gestion des Équipes et des Utilisateurs -->
+  <section class="panel full-width" id="adminControlPanel">
+    <h2>👑 Panneau de Gestion Admin & Utilisateurs</h2>
+    <div class="admin-grid">
+      <div>
+        <h3>Créer un compte DG</h3>
+        <form id="adminCreateUserForm">
+          <label for="newDgEmail">Courriel du DG</label>
+          <input id="newDgEmail" type="email" required placeholder="dg.montreal@chsl.com">
+          <label for="newDgPassword">Mot de passe provisoire</label>
+          <input id="newDgPassword" type="password" minlength="6" required placeholder="MotDePasse123">
+          <label for="newDgTeam">Équipe attribuée</label>
+          <select id="newDgTeam"></select>
+          <button type="submit" class="good" style="margin-top:10px; width:100%;">➕ Créer le compte DG</button>
+        </form>
+        <div id="adminUserStatus" class="status">Prêt.</div>
+      </div>
+
+      <div>
+        <h3>Gestion des Équipes</h3>
+        <label for="newTeamName">Ajouter une équipe</label>
+        <div class="row">
+          <input id="newTeamName" placeholder="EX: QUE — Nordiques de Québec">
+          <button id="addTeamBtn" class="primary">Ajouter</button>
+        </div>
+        <label for="removeTeamSelect" style="margin-top:12px;">Supprimer une équipe</label>
+        <div class="row">
+          <select id="removeTeamSelect"></select>
+          <button id="removeTeamBtn" class="danger">Retirer</button>
+        </div>
+      </div>
+    </div>
+
+    <h3>Liste des Comptes DGs & Accès</h3>
+    <div id="usersList" class="admin-grid">
+      <div class="small">Chargement des utilisateurs...</div>
+    </div>
+  </section>
+
   <section class="panel">
     <h2>1. Salle de draft</h2>
     <label for="room">Code de salle</label>
@@ -508,9 +568,9 @@ footer {
 </footer>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, set, get, runTransaction, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, set, get, runTransaction, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBrSphFXSApqy0CCI67MsgnYo_W9F4jcws",
@@ -533,8 +593,10 @@ const defaultTeams = [
 "PHI — Philadelphia Flyers","PIT — Pittsburgh Penguins","SEA — Seattle Kraken","SJS — San Jose Sharks","STL — St. Louis Blues",
 "TBL — Tampa Bay Lightning","TOR — Toronto Maple Leafs","UTA — Utah Mammoth","VAN — Vancouver Canucks","WSH — Washington Capitals"
 ];
-let app, auth, db, user = null, isLive = false, isAdmin = false, roomCode = "CHSL-DRAFT", roomRef = null, unsubscribe = null;
+let app, auth, db, secondaryApp, secondaryAuth, user = null, isLive = false, isAdmin = false, roomCode = "CHSL-DRAFT", roomRef = null, unsubscribe = null;
 let state = {teams:defaultTeams, players:[], picks:[], rounds:7, orderMode:"snake"};
+let registeredUsers = {};
+
 const $ = id => document.getElementById(id);
 const escapeHtml = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function localKey(){return "ehmFantasyDraft:"+roomCode}
@@ -559,6 +621,13 @@ async function connectRoom(){
     const snap=await get(roomRef);
     if(!snap.exists()) await set(roomRef,{teams:defaultTeams,players:[],picks:[],rounds:7,orderMode:"snake",createdAt:Date.now()});
     unsubscribe=onValue(roomRef,s=>{if(s.exists()){state={...state,...s.val()};state.teams=state.teams||defaultTeams;state.players=state.players||[];state.picks=state.picks||[];render()}},err=>setStatus("Erreur de salle : "+err.message,"bad"));
+    
+    // Écoute des utilisateurs
+    onValue(ref(db, "users"), snap => {
+      registeredUsers = snap.val() || {};
+      renderUsersList();
+    });
+
     setStatus("Connecté en direct à la salle "+roomCode,"ok");
   }else{
     const saved=readLocal();state=saved||{teams:defaultTeams,players:[],picks:[],rounds:7,orderMode:"snake"};
@@ -574,9 +643,34 @@ async function persist(patch){
 
 function renderTeams(){
   const previous=$("teamSelect").value;
-  $("teamSelect").innerHTML=state.teams.map((t,i)=>`<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+  const optionsHtml = state.teams.map(t=>`<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+  $("teamSelect").innerHTML = optionsHtml;
+  $("newDgTeam").innerHTML = optionsHtml;
+  $("removeTeamSelect").innerHTML = optionsHtml;
   if(state.teams.includes(previous)) $("teamSelect").value=previous;
   $("rounds").value=String(state.rounds||7);$("orderMode").value=state.orderMode||"snake";
+}
+
+function renderUsersList() {
+  const container = $("usersList");
+  const keys = Object.keys(registeredUsers);
+  if (!keys.length) {
+    container.innerHTML = '<div class="small">Aucun DG enregistré.</div>';
+    return;
+  }
+  container.innerHTML = keys.map(uid => {
+    const u = registeredUsers[uid];
+    const teamOptions = state.teams.map(t => `<option value="${escapeHtml(t)}" ${u.team===t?'selected':''}>${escapeHtml(t)}</option>`).join('');
+    return `
+      <div class="user-card">
+        <div class="user-email">${escapeHtml(u.email || 'Email non spécifié')}</div>
+        <div class="user-meta">UID : ${uid}</div>
+        <label>Équipe attribuée</label>
+        <select data-user-team="${uid}">${teamOptions}</select>
+        <button class="danger" data-delete-user="${uid}" style="margin-top:4px;">Supprimer Profil</button>
+      </div>
+    `;
+  }).join('');
 }
 
 function render(){
@@ -642,6 +736,76 @@ $("saveSettings").addEventListener("click",async()=>{
   try{await persist({rounds,orderMode});alert("Paramètres enregistrés.")}catch(e){alert("Erreur : "+e.message)}
 });
 
+// Événements Panneau Admin
+$("addTeamBtn").addEventListener("click", async () => {
+  const name = $("newTeamName").value.trim();
+  if(!name) return;
+  if(state.teams.includes(name)) { alert("Cette équipe existe déjà."); return; }
+  const newTeams = [...state.teams, name];
+  try {
+    await persist({ teams: newTeams });
+    $("newTeamName").value = "";
+  } catch(e) { alert("Erreur : " + e.message); }
+});
+
+$("removeTeamBtn").addEventListener("click", async () => {
+  const name = $("removeTeamSelect").value;
+  if(!name) return;
+  if(!confirm(`Supprimer l'équipe ${name} ?`)) return;
+  const newTeams = state.teams.filter(t => t !== name);
+  try {
+    await persist({ teams: newTeams });
+  } catch(e) { alert("Erreur : " + e.message); }
+});
+
+$("adminCreateUserForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const email = $("newDgEmail").value.trim().toLowerCase();
+  const password = $("newDgPassword").value;
+  const team = $("newDgTeam").value;
+  const statusEl = $("adminUserStatus");
+  
+  statusEl.textContent = "Création du compte...";
+  try {
+    if(!secondaryAuth) {
+      secondaryApp = initializeApp(firebaseConfig, "Secondary");
+      secondaryAuth = getAuth(secondaryApp);
+    }
+    const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+    await set(ref(db, "users/" + cred.user.uid), {
+      email,
+      team,
+      createdAt: Date.now()
+    });
+    await signOut(secondaryAuth);
+    statusEl.textContent = "DG créé avec succès !";
+    statusEl.className = "status ok";
+    $("adminCreateUserForm").reset();
+  } catch(err) {
+    statusEl.textContent = "Erreur : " + err.message;
+    statusEl.className = "status bad";
+  }
+});
+
+$("usersList").addEventListener("change", async e => {
+  const target = e.target;
+  if(target.dataset.userTeam) {
+    const uid = target.dataset.userTeam;
+    const team = target.value;
+    await update(ref(db, "users/" + uid), { team });
+  }
+});
+
+$("usersList").addEventListener("click", async e => {
+  const btn = e.target.closest("[data-delete-user]");
+  if(btn) {
+    const uid = btn.dataset.deleteUser;
+    if(confirm("Supprimer la fiche utilisateur de cet utilisateur ?")) {
+      await remove(ref(db, "users/" + uid));
+    }
+  }
+});
+
 $("importBtn").addEventListener("click",async()=>{
   const file=$("ehmFile").files[0];if(!file){alert("Choisis d’abord le fichier players.ehm.");return}
   try{
@@ -702,7 +866,7 @@ function showLogin(){
   $("authPanel").style.display="block";
 }
 
-// Gestion de l'alternance d'onglets (Connexion vs Inscription)
+// Gestion des onglets authentification
 $("tabLogin").addEventListener("click", () => {
   $("tabLogin").classList.add("active");
   $("tabRegister").classList.remove("active");
@@ -734,7 +898,7 @@ $("loginForm").addEventListener("submit",async e=>{
   }finally{$("loginBtn").disabled=false}
 });
 
-// Création de compte
+// Inscription
 $("registerForm").addEventListener("submit", async e => {
   e.preventDefault();
   if(!firebaseReady){setAuthStatus("Firebase n’est pas configuré.","bad");return}
@@ -743,6 +907,7 @@ $("registerForm").addEventListener("submit", async e => {
   $("registerBtn").disabled = true;
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await set(ref(db, "users/" + cred.user.uid), { email, team: defaultTeams[0], createdAt: Date.now() });
     setAuthStatus("Compte créé avec succès ! UID : " + cred.user.uid, "ok");
   } catch(err) {
     setAuthStatus("Erreur de création : " + err.message, "bad");
@@ -751,7 +916,7 @@ $("registerForm").addEventListener("submit", async e => {
   }
 });
 
-// Gestion de la Déconnexion sur tous les boutons dédiés
+// Déconnexion
 document.querySelectorAll(".logoutBtn").forEach(btn => {
   btn.addEventListener("click", async () => {
     try {
